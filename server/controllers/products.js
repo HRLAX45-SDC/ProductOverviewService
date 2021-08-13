@@ -26,10 +26,10 @@ module.exports = {
       .then((result) => res.set(200).send(result.rows))
       .catch((e) => res.set(403).send(e.stack));
   },
-  related: (req, res) => {
-    const { product_id } = req.params;
-    dbUtils.getRelated(product_id)
-      .then((result) => res.set(200).send(result.rows))
-      .catch((e) => res.set(403).send(e.stack));
-  },
+  // related: (req, res) => {
+  //   const { product_id } = req.params;
+  //   dbUtils.getRelated(product_id)
+  //     .then((result) => res.set(200).send(result.rows))
+  //     .catch((e) => res.set(403).send(e.stack));
+  // },
 };
