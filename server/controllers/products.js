@@ -1,35 +1,29 @@
-const { url, Atelier } = require('../lib/AtelierAPI');
-let URL = url.products;
-
-const ERROR_MESSAGES = [
-  'Unable to retrieve products from \'/products\'',
-  'Unable to retrieve products from \'/products/:product_id\'',
-  'Unable to retrieve products from \'/products/:product_id/styles\'',
-  'Unable to retrieve products from \'/products/:product_id/related\'',
-];
+const dbUtils = require('../../db/dbUtils');
 
 /* ======================
     /api/products
 ====================== */
 module.exports = {
   list: (req, res) => {
-    Atelier.get(URL)
-      .then(response => res.status(response.status).json(response.data))
-      .catch(err => res.status(404).json(ERROR_MESSAGES[0]));
+    const { page, count } = req.query;
+    dbUtils.getProducts(page, count)
+      .then((result) => res.set(200).send(result.rows))
+      .catch((e) => res.set(403).send(e.stack));
   },
   product: (req, res) => {
-    Atelier.get(`${URL}/${req.params.product_id}`)
-      .then(response => res.status(response.status).json(response.data))
-      .catch(err => res.status(404).json(ERROR_MESSAGES[1]));
+    const { product_id } = req.params;
+    dbUtils.getProduct(product_id)
+    .then(result => {
+      console.log(result, typeof result);
+      return result;
+    })
+      .then((result) => res.set(200).send(result.rows[0]))
+      .catch((e) => res.set(403).send(e.stack));
   },
-  styles: (req, res) => {
-    Atelier.get(`${URL}/${req.params.product_id}/styles`)
-      .then(response => res.status(response.status).json(response.data))
-      .catch(err => res.status(404).json(ERROR_MESSAGES[2]));
-  },
-  related: (req, res) => {
-    Atelier.get(`${URL}/${req.params.product_id}/related`)
-      .then(response => res.status(response.status).json(response.data))
-      .catch(err => res.status(404).json(ERROR_MESSAGES[3]));
-  },
+  // styles: (req, res) => {
+  //  // DB INTERACTION HERE;;
+  // },
+  // related: (req, res) => {
+  //   // DB INTERACTION HERE;;
+  // },
 };
