@@ -1,3 +1,4 @@
+.DS_*
 ProductOverview/csv_data/
 package-lock.json
 .eslintrc.js
