@@ -98,12 +98,4 @@ CREATE TABLE "inventory" (
   PRIMARY KEY ("id")
 );
 
--- ---
--- Table Properties
--- ---
 
--- ALTER TABLE "products" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE "styles" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE "photos" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE "Feature" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
--- ALTER TABLE "inventory" ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
