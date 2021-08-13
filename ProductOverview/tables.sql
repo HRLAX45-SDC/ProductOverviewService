@@ -99,3 +99,37 @@ CREATE TABLE "inventory" (
 );
 
 
+-----
+-- Perform CSV Loading
+-----
+COPY carts FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/cart.csv' delimiter ',' csv header;
+
+COPY features FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/features.csv' delimiter ',' csv header;
+
+COPY photos FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/photos.csv' delimiter ',' csv header;
+
+COPY products FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/products.csv' delimiter ',' csv header;
+
+COPY inventory FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/inventory.csv' delimiter ',' csv header;
+
+COPY styles FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/styles.csv' delimiter ',' csv header;
+
+-- ---
+-- Foreign Keys to be enabled after tables.sql created and loaded
+-- ---
+
+ALTER TABLE "styles" ADD FOREIGN KEY (id_products) REFERENCES "products" ("id");
+ALTER TABLE "photos" ADD FOREIGN KEY (id_styles) REFERENCES "styles" ("id");
+ALTER TABLE "features" ADD FOREIGN KEY (id_products) REFERENCES "products" ("id");
+ALTER TABLE "inventory" ADD FOREIGN KEY (id_styles) REFERENCES "styles" ("id");
+ALTER TABLE "carts" ADD FOREIGN KEY (id_products) REFERENCES "products" ("id");
+
+-----
+-- Create Indexes for FKs as psql doesn't do this automatically
+-----
+
+CREATE INDEX features_id_products_idx on features (id_products);
+CREATE INDEX styles_id_products_idx on styles (id_products);
+CREATE INDEX photos_id_products_idx on photos (id_styles);
+CREATE INDEX inventory_id_products_idx on inventory (id_styles);
+CREATE INDEX cart_id_products_idx on carts (id_products);
