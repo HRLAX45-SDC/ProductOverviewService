@@ -10,7 +10,7 @@
 --
 -- ---
 
-DROP TABLE IF EXISTS "products";
+DROP TABLE "products" CASCADE;
 
 CREATE TABLE "products" (
   "id" bigserial NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE "products" (
 --
 -- ---
 
-DROP TABLE IF EXISTS "styles";
+DROP TABLE "styles" CASCADE;
 
 CREATE TABLE "styles" (
   "id" bigserial NOT NULL,
@@ -44,7 +44,7 @@ CREATE TABLE "styles" (
 --
 -- ---
 
-DROP TABLE IF EXISTS "carts";
+DROP TABLE "carts" CASCADE;
 
 CREATE TABLE "carts" (
   "id" bigserial NOT NULL,
@@ -58,7 +58,7 @@ CREATE TABLE "carts" (
 --
 -- ---
 
-DROP TABLE IF EXISTS "photos";
+DROP TABLE "photos" CASCADE;
 
 CREATE TABLE "photos" (
   "id" bigserial NOT NULL,
@@ -73,7 +73,7 @@ CREATE TABLE "photos" (
 --
 -- ---
 
-DROP TABLE IF EXISTS "features";
+DROP TABLE "features" CASCADE;
 
 CREATE TABLE "features" (
   "id" bigserial NOT NULL,
@@ -88,7 +88,7 @@ CREATE TABLE "features" (
 --
 -- ---
 
-DROP TABLE IF EXISTS "inventory";
+DROP TABLE "inventory" CASCADE;
 
 CREATE TABLE "inventory" (
   "id" bigserial NOT NULL,
@@ -98,6 +98,14 @@ CREATE TABLE "inventory" (
   PRIMARY KEY ("id")
 );
 
+DROP TABLE "related" CASCADE;
+
+CREATE TABLE "related" (
+"id" bigint NOT NULL,
+"current_product_id" bigInt NOT NULL,
+"related_product_id" bigInt NOT NULL,
+PRIMARY KEY ("id")
+);
 
 -----
 -- Perform CSV Loading
@@ -114,6 +122,8 @@ COPY inventory FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/in
 
 COPY styles FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/styles.csv' delimiter ',' csv header;
 
+COPY related FROM '/Users/benbernardy/bootcamp/SDC/ProductOverview/csv_data/related.csv' delimiter ',' csv header;
+
 -- ---
 -- Foreign Keys to be enabled after tables.sql created and loaded
 -- ---
@@ -123,6 +133,8 @@ ALTER TABLE "photos" ADD FOREIGN KEY (id_styles) REFERENCES "styles" ("id");
 ALTER TABLE "features" ADD FOREIGN KEY (id_products) REFERENCES "products" ("id");
 ALTER TABLE "inventory" ADD FOREIGN KEY (id_styles) REFERENCES "styles" ("id");
 ALTER TABLE "carts" ADD FOREIGN KEY (id_products) REFERENCES "products" ("id");
+ALTER TABLE "related" ADD FOREIGN KEY (current_product_id) REFERENCES "products" ("id");
+ALTER TABLE "related" ADD FOREIGN KEY (related_product_id) REFERENCES "products" ("id");
 
 -----
 -- Create Indexes for FKs as psql doesn't do this automatically
@@ -132,4 +144,5 @@ CREATE INDEX features_id_products_idx on features (id_products);
 CREATE INDEX styles_id_products_idx on styles (id_products);
 CREATE INDEX photos_id_products_idx on photos (id_styles);
 CREATE INDEX inventory_id_products_idx on inventory (id_styles);
-CREATE INDEX cart_id_products_idx on carts (id_products);
+CREATE INDEX cart_id_products_idx on related (related_product_id);
+CREATE INDEX related_current_product on related (current_product_id);
