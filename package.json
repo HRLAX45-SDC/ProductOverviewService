@@ -11,10 +11,13 @@
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-airbnb-base": "^14.2.1",
-    "eslint-plugin-import": "^2.24.0"
+    "eslint-plugin-import": "^2.24.0",
+    "jest": "^27.0.6"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest --collectCoverage --config=jest_config.json",
+    "start:prod": "NODE_ENV=production && nodemon ./server/",
+    "start:dev": "NODE_ENV=development && nodemon ./server/"
   },
   "repository": {
     "type": "git",

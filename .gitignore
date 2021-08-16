@@ -1,5 +1,8 @@
-*.DS_STORE
+.DS_Store
 ProductOverview/csv_data/
 package-lock.json
 .eslintrc.js
 node_modules/
+coverage
+k6_tests
+jest_config.json
