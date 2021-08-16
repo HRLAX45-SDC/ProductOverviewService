@@ -1,0 +1,32 @@
+{
+  "name": "sdc",
+  "version": "1.0.0",
+  "description": "SDC Repository for Service Development",
+  "main": "index.js",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "pg": "^8.7.1"
+  },
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-plugin-import": "^2.24.0",
+    "jest": "^27.0.6"
+  },
+  "scripts": {
+    "test": "jest --collectCoverage --config=jest_config.json",
+    "start:prod": "NODE_ENV=production && nodemon ./server/",
+    "start:dev": "NODE_ENV=development && nodemon ./server/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HRLAX45-SDC/ProductOverviewService.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HRLAX45-SDC/ProductOverviewService/issues"
+  },
+  "homepage": "https://github.com/HRLAX45-SDC/ProductOverviewService#readme"
+}
