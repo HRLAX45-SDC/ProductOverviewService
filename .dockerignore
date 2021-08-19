@@ -1,0 +1,9 @@
+coverage
+k6_tests
+node_modules
+ProductOverview
+.gitignore
+FEAWSKEY.pem
+jest*
+package-lock.json
+README.md
