@@ -1,12 +1,12 @@
 const pg = require('pg');
 
 const pool = new pg.Pool({
-  // Connection info for pool. Note to not call pool.end() till program end.
+
   user: 'postgres',
-  host: '127.0.0.1',
-  database: 'prod_over',
-  password: '123qwe!@#QWE',
-  port: 5432,
+  host: '3.101.144.40',
+  database: 'po',
+  password: 'docker',
+  port: 3001,
 });
 
 pool.query('SELECT NOW()', (err, res) => {
