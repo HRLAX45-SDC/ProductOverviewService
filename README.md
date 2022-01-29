@@ -1,42 +1,36 @@
-# ProductOverviewService
-Experimentation with containerizing Postgres databases and using express service workers. 
+![Atelier Logo](LoadTesting_SS/Atelier.svg)
 
-# Premise
-Using another teams front end codebase, our team was tasked with developing corresponding backend microservices.
+An exercise in system design working within a large team.
 
-## Process:
+## Approach
+Recieving a clientside component from the Frontend Development Team, my team has been tasked with replicating the Atelier API that supplies live and persistent data to the clientside of our storefront. We experimented with several different scaling strategies and fault tolerance designs. In the end, we decided to break the Atelier API into several smaller microservices. Smaller mimcroservice foot prints decreased instances deployment costs, while also ensuring resiliance in the event of unexpected back end downtime. Once each microservice had been thoroughly stress tested, we would use NGINX load balancing instances in front of each microservice in order to combine them.
 
-### Database Modelling:
-After some brief research we determined that a relational database would better suit the use case of an online store.
-Ultimately, we decided on implementing Postgres due to team members previous experiene with ETL processes in the pg environment.
+### Process:
+Daily standups were obvserved along with 3 day sprint iterations. The team met regularly to discuss hurdles and share strategies often working in a pair programming setting. 
+  1.  Database Modelling: 
+After some brief research we determined that a relational database would better suit the use case of an online store. Ultimately, we decided on implementing Postgres due to team members previous experiene with ETL processes in the pg environment.
 
-A single express server was designed to construct queries and interact with a local Postgres database.
+  2. Local Testing: After the local backend was stood up, we commenced testing query times by directing queries at the last 10% of our entries. The team colloborated by looking doublechecking each others query methods. Testing was directed at the last 10% of our tables with random data in order to weed out any time loss from unexpected sequential scans or inefficient joins.
 
-### Local Testing:
-After the local backend was stood up, we commenced testing query times by directing queries at the last 10% of our entries.
+  3. First bottleneck: We observed significant slowdown within our node server, due to reformatting query results into the correct shape for clientside consumption. Collectively, the team decided it was worth spending an extra sprint cycle to refactor our database queries using json_agg functions within postgres. Correctly forming the data within the postgresql instance lead to a dramatic reduction in response times. (C runs much faster than JS... duh!)
+  4. Second BottleNeck: Despite correctly forming responses, we were still seeing local response times in excess of 300ms... A closer look revealed that our established ETL process used the psql command line. When performing ETL in PgAdmin, establishing foreign key constraints automatically created secondary indexes to maintain constant time lookups. HOWEVER! Doing the same process through the psql cli did not automatically create our secondary indexes on FKs. 
 
-From there we moved to complex queries using aggregators and foreign key references, and hit a pretty significant bottleneck.
-
-Using k6 to gain increased visibility we determined the slowdown was occurring in our database queries, and NOT the express server as we had expected.
-
-A second pass through the database schema was made and I realized there were no indexes built from the foreign keys. Armed with that knowledge, I added an Index to our schema, so future deployments would automatically make these changes.
-
-Returning to k6, our results now matched our expectations of less than 10ms per query.
-![TestImage](TODO)
+__Returning to k6 now, our results matched our expectations of less than 10ms per query.__
+![TestImage](LoadTesting_SS/450RPS.png)
 
 ## Deployment:
 We chose to use AWS EC2 micro.t2 instances in order to accommodate our lean deployment budget ( *COUGH COUGH ZERO DOLLARS* ).
 
-After deploying single instances, we leaned on loader.io to fire increasing requests per second, until we noticed degraded response times or errors in excess of 3%.
-![loader1](TODO)
+After deploying single instances, we leaned on loader.io to fire increasing requests per second, until we noticed degraded response times or errors in excess of 3%. Response time was rock solid at 62-64ms until requests per second began creeping above 1500RPS per instance.
+![loader1](LoadTesting_SS/1500.Threshold.png)
 
 ## Scaling: 
-After discovering the limitation of a single instance, we horizontally scaled to 5 service workers and used a round robin NGNX load balancer to coordinate increased traffic. 
-Testing in this orientation met our intitial goal high durability and fault tolerant service of 8000+ RPS with 0% error rate.
-![loaderio2](TODO)
+After discovering the limitation of a single instance, we horizontally scaled to 5 micro-service workers and used experimented with several load balancing strategie s with an NGNX instance coordinating our increased traffic. We found that using a "least connected" strategy in this orientation was slightly faster than the default "round-robin" approach. 
+
+Further testing was able to meet our intitial goal of high durability and fault tolerant service of up to 8000 RPS with 0% error rate and sub 100ms response times.
 
 # Revisiting
 This exercise was illuminating on many fronts, but most importantly I would like to revisit and work on...
+
 * More thorough Docker implementation to enable rapid deployment
-* Attempt to have multiple express servers interacting with a single postgres database (instead of 1 express server: 1 postgres)
-* Learn more about sharding, Write ahead logging, and replicating pg databases for increased fault tolerance.
+* WASL and maintaining concurrancy in multiple databases instances during heavy WRITE loads.
