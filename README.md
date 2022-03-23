@@ -29,7 +29,7 @@ After discovering the limitation of a single instance, we horizontally scaled to
 
 Further testing was able to meet our intitial goal of high durability and fault tolerant service of up to 8000 RPS with 0% error rate and sub 100ms response times.
 
-#Products API Documentation
+# Products API Documentation
 ### List Products
 
 `GET /products`
